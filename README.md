@@ -141,12 +141,31 @@ mvp-base/
 
 ## 🚀 Instalación
 
-### 1. Clonar el repositorio
+### 1. Usar como Template
 
+**Opción A: Desde GitHub (Recomendado)**
+1. Click en "Use this template" → "Create a new repository"
+2. Clona tu nuevo repositorio
+3. Ejecuta el script de setup:
+
+```bash
+git clone <tu-nuevo-repo-url>
+cd <tu-proyecto>
+./setup-project.sh
+```
+
+**Opción B: Clone directo**
 ```bash
 git clone <repository-url>
 cd mvp-base
+./setup-project.sh
 ```
+
+El script `setup-project.sh` te preguntará:
+- Nombre del proyecto
+- Descripción
+- Autor y email
+- Y configurará automáticamente todos los archivos
 
 ### 2. Backend Setup
 
