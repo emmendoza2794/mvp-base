@@ -1,6 +1,6 @@
 # MVP Base
 
-> Full-stack boilerplate con arquitectura en capas, diseñado para despliegue serverless en AWS Lambda y Cloudflare Workers.
+> Template Full-stack con arquitectura en capas, diseñado para despliegue serverless en AWS Lambda y Cloudflare Workers.
 
 ## 📋 Tabla de Contenidos
 
