@@ -333,18 +333,6 @@ export default defineNuxtConfig({
 })
 ```
 
-### Database Migration
-
-```bash
-cd back
-
-# Crear migraciones (cuando implementes Alembic)
-alembic revision --autogenerate -m "descripcion"
-
-# Aplicar migraciones
-alembic upgrade head
-```
-
 ## 📝 Convenciones de Código
 
 ### Backend (Python)
