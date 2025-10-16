@@ -1,13 +1,16 @@
 # Backend - MVP Base
 
-Backend structure following clean architecture principles.
+Backend structure following layered architecture principles.
 
 ## Structure
 
 ```
 back/
 ├── src/
-│   ├── core/          # Core functionality (config, database, dependencies)
+│   ├── core/          # Core functionality (config, database, auth)
+│   │   ├── config.py  # Settings and configuration
+│   │   ├── database.py # Database connection
+│   │   └── auth.py    # JWT authentication & password hashing
 │   ├── models/        # Database models
 │   ├── repositories/  # Data access layer
 │   ├── routes/        # API endpoints

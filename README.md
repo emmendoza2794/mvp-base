@@ -1,6 +1,6 @@
 # MVP Base
 
-> Full-stack boilerplate siguiendo principios de arquitectura limpia, diseñado para despliegue serverless en AWS Lambda y Cloudflare Workers.
+> Full-stack boilerplate con arquitectura en capas, diseñado para despliegue serverless en AWS Lambda y Cloudflare Workers.
 
 ## 📋 Tabla de Contenidos
 
@@ -18,19 +18,21 @@
 
 **MVP Base** es un proyecto base para construcción rápida de MVPs siguiendo mejores prácticas de desarrollo. Incluye:
 
-- ✅ Backend con arquitectura limpia (Clean Architecture)
+- ✅ Backend con arquitectura en capas (Layered Architecture)
 - ✅ Frontend moderno con Nuxt 4
-- ✅ Sistema de autenticación JWT
+- ✅ Sistema de autenticación JWT con Form Data
 - ✅ Base de datos PostgreSQL con SQLAlchemy
+- ✅ Health check con verificación de BD
 - ✅ UI components con PrimeVue y Tailwind CSS
 - ✅ Listo para despliegue serverless
 - ✅ TypeScript en frontend
 - ✅ Gestión de estado con Pinia
 - ✅ Soporte PWA
+- ✅ Script de setup automático
 
 ## 🏗️ Arquitectura
 
-### Backend (Clean Architecture)
+### Backend (Arquitectura en Capas)
 
 ```
 Routes → Services → Repositories → Models
@@ -39,12 +41,12 @@ Schemas   Core (Config, DB, Utils)
 ```
 
 **Capas:**
-- **Routes**: Manejo de requests/responses HTTP
+- **Routes**: Manejo de requests/responses HTTP (Form Data)
 - **Services**: Lógica de negocio
 - **Repositories**: Acceso a datos y operaciones de BD
 - **Models**: Definición de entidades (SQLAlchemy)
 - **Schemas**: Validación y serialización (Pydantic)
-- **Core**: Configuración y utilidades compartidas
+- **Core**: Configuración, database, autenticación JWT
 
 ### Frontend (Nuxt 4 + PrimeVue)
 
@@ -61,9 +63,10 @@ Components   Utils
 - **ORM**: SQLAlchemy 2.0.x
 - **Validación**: Pydantic 2.x
 - **Base de datos**: PostgreSQL (psycopg2-binary)
-- **Autenticación**: JWT (PyJWT) + bcrypt
+- **Autenticación**: JWT (PyJWT) + Passlib[bcrypt]
 - **Server**: Uvicorn (desarrollo) / Mangum (AWS Lambda)
 - **Python**: 3.12+
+- **Health Check**: Verificación de estado de BD incluida
 
 ### Frontend
 - **Framework**: Nuxt 4.1.x
@@ -86,9 +89,10 @@ Components   Utils
 mvp-base/
 ├── back/                      # Backend (FastAPI)
 │   ├── src/
-│   │   ├── core/             # Configuración y base de datos
+│   │   ├── core/             # Configuración, base de datos y auth
 │   │   │   ├── config.py     # Settings (env vars, JWT, etc)
 │   │   │   ├── database.py   # Database connection
+│   │   │   ├── auth.py       # JWT & password hashing
 │   │   │   └── __init__.py
 │   │   ├── models/           # SQLAlchemy models
 │   │   ├── repositories/     # Data access layer
@@ -181,7 +185,15 @@ pip install -r requirements.txt
 
 **Configurar variables de entorno:**
 
-Crear archivo `.env` en `/back`:
+```bash
+# Copiar archivo de ejemplo
+cp back/.env.example back/.env
+
+# Editar back/.env con tus valores reales
+# Especialmente DATABASE_URL y JWT_SECRET_KEY
+```
+
+Variables en `back/.env`:
 
 ```env
 # Database
@@ -190,7 +202,7 @@ DATABASE_URL=postgresql://user:password@localhost:5432/mvp_base
 # Application
 DEBUG=True
 
-# JWT
+# JWT (se genera automáticamente con setup-project.sh)
 JWT_SECRET_KEY=your-super-secret-key-change-in-production
 JWT_ALGORITHM=HS256
 JWT_ACCESS_TOKEN_EXPIRE_MINUTES=10080
@@ -227,6 +239,43 @@ poetry run uvicorn src.main:app --reload --port 8000
 
 API disponible en: `http://localhost:8000`
 Docs interactiva: `http://localhost:8000/docs`
+Health check: `http://localhost:8000/health`
+
+**Endpoints de autenticación:**
+
+```bash
+# Registrar usuario (Form Data)
+POST /auth/register
+Content-Type: multipart/form-data
+  email: user@example.com
+  password: secreto123
+  name: Juan Pérez
+
+# Login (Form Data)
+POST /auth/login
+Content-Type: multipart/form-data
+  email: user@example.com
+  password: secreto123
+
+# Obtener usuario actual (requiere token)
+GET /auth/me
+Authorization: Bearer <token>
+```
+
+**Verificar estado:**
+
+```bash
+# Health check con estado de base de datos
+curl http://localhost:8000/health
+
+# Respuesta:
+{
+  "status": "healthy",        # o "degraded" si BD desconectada
+  "service": "MVP Base API",
+  "version": "1.0.0",
+  "database": "connected"     # o "disconnected"
+}
+```
 
 ### Frontend
 
