@@ -1,47 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-    <!-- Navbar moderna -->
-    <nav class="bg-white/80 backdrop-blur-lg shadow-lg sticky top-0 z-50 border-b border-gray-200">
-      <div class="container mx-auto px-6 py-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <span class="icon-[ic--twotone-stars] w-8 h-8 text-indigo-600"></span>
-            <span class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              Demo App
-            </span>
-          </div>
-          <div class="flex items-center gap-4">
-            <Button icon="pi pi-bell" severity="secondary" text rounded />
-
-            <!-- Avatar con menú -->
-            <div class="relative">
-              <Avatar
-                label="JD"
-                class="cursor-pointer bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-semibold hover:shadow-lg transition-shadow"
-                shape="circle"
-                @click="toggleUserMenu"
-              />
-
-              <Menu ref="userMenu" :model="userMenuItems" :popup="true">
-                <template #start>
-                  <div class="px-4 py-3 border-b border-gray-200">
-                    <p class="text-sm font-semibold text-gray-900">Juan Pérez</p>
-                    <p class="text-xs text-gray-500">juan@example.com</p>
-                  </div>
-                </template>
-                <template #item="{ item, props }">
-                  <a v-ripple class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer" v-bind="props.action">
-                    <span :class="item.icon + ' w-5 h-5 text-gray-600'"></span>
-                    <span class="font-medium text-gray-700">{{ item.label }}</span>
-                  </a>
-                </template>
-              </Menu>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
-
+  <div class="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 min-h-screen">
     <div class="container mx-auto px-6 py-12">
       <!-- Hero Section -->
       <div class="text-center mb-16 animate-fade-in">
@@ -387,48 +345,13 @@
         </div>
       </div>
     </div>
-
-    <Toast position="top-right" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
 
 const toast = useToast()
-const userMenu = ref()
-
-const userMenuItems = ref([
-  {
-    label: 'Mi Perfil',
-    icon: 'icon-[ic--twotone-person]',
-    command: () => {
-      toast.add({ severity: 'info', summary: 'Perfil', detail: 'Abriendo perfil...', life: 2000 })
-    }
-  },
-  {
-    label: 'Configuración',
-    icon: 'icon-[ic--twotone-settings]',
-    command: () => {
-      toast.add({ severity: 'info', summary: 'Configuración', detail: 'Abriendo configuración...', life: 2000 })
-    }
-  },
-  {
-    separator: true
-  },
-  {
-    label: 'Cerrar Sesión',
-    icon: 'icon-[ic--twotone-logout]',
-    command: () => {
-      toast.add({ severity: 'warn', summary: 'Sesión', detail: 'Cerrando sesión...', life: 2000 })
-    }
-  }
-])
-
-const toggleUserMenu = (event: Event) => {
-  userMenu.value.toggle(event)
-}
 
 const formData = ref({
   name: '',

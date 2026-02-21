@@ -29,6 +29,9 @@
 - ✅ Gestión de estado con Pinia
 - ✅ Soporte PWA
 - ✅ Script de setup automático
+- ✅ Navegación responsive: sidebar desktop + barra inferior mobile + drawer con overlay
+- ✅ Header global con avatar de usuario y menú contextual
+- ✅ Landing page y página de documentación incluidas
 
 ## 🏗️ Arquitectura
 
@@ -59,23 +62,24 @@ Components   Utils
 ## 🛠️ Stack Tecnológico
 
 ### Backend
-- **Framework**: FastAPI 0.115.x
+- **Framework**: FastAPI 0.129.x
 - **ORM**: SQLAlchemy 2.0.x
 - **Validación**: Pydantic 2.x
 - **Base de datos**: PostgreSQL (psycopg2-binary)
 - **Autenticación**: JWT (PyJWT) + Passlib[bcrypt]
-- **Server**: Uvicorn (desarrollo) / Mangum (AWS Lambda)
+- **Server**: Uvicorn 0.41.x (desarrollo) / Mangum 0.21.x (AWS Lambda)
 - **Python**: 3.12+
 - **Health Check**: Verificación de estado de BD incluida
 
 ### Frontend
-- **Framework**: Nuxt 4.1.x
-- **UI Library**: PrimeVue 4.3.x
+- **Framework**: Nuxt 4.3.x
+- **UI Library**: PrimeVue 4.5.x
 - **Estilos**: Tailwind CSS 4.x + TailwindCSS PrimeUI
-- **Iconos**: @iconify/json
+- **Iconos**: @iconify/json + @iconify/tailwind4
 - **Estado**: Pinia 3.x
 - **PWA**: @vite-pwa/nuxt
 - **TypeScript**: Soporte completo
+- **Navegación**: Sidebar desktop fijo + barra inferior mobile + drawer con overlay (PrimeVue Drawer)
 
 ### DevOps & Deployment
 - **Backend**: AWS SAM + Lambda
@@ -113,14 +117,20 @@ mvp-base/
 │   ├── app/
 │   │   ├── assets/
 │   │   │   ├── css/
-│   │   │   │   └── main.css  # Tailwind imports
+│   │   │   │   └── main.css        # Tailwind imports
 │   │   │   └── themes/
-│   │   │       └── theme.js  # PrimeVue theme
+│   │   │       └── theme.js        # PrimeVue theme
+│   │   ├── components/
+│   │   │   ├── AppHeader.vue       # Header global (avatar, menú usuario)
+│   │   │   └── AppNavigation.vue   # Sidebar desktop + barra mobile + drawer
+│   │   ├── layouts/
+│   │   │   └── default.vue         # Layout principal (header + nav + slot)
 │   │   └── pages/
-│   │       ├── index.vue     # Home page
-│   │       └── demo.vue      # Demo page
-│   ├── nuxt.config.ts        # Nuxt configuration
-│   ├── tailwind.config.js    # Tailwind configuration
+│   │       ├── index.vue           # Landing page
+│   │       ├── demo.vue            # Demo de componentes
+│   │       └── docs.vue            # Documentación del template
+│   ├── nuxt.config.ts              # Nuxt configuration
+│   ├── tailwind.config.js          # Tailwind configuration
 │   ├── package.json
 │   └── README.md
 │
