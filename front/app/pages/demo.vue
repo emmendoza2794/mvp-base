@@ -86,7 +86,7 @@
             <template #title>
               <div class="flex items-center gap-3">
                 <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-2 rounded-lg">
-                  <span class="icon-[ic--twotone-edit-document] w-6 h-6 text-white"></span>
+                  <span class="icon-[ic--twotone-edit-note] w-6 h-6 text-white"></span>
                 </div>
                 <span class="text-xl font-semibold">Formulario de Contacto</span>
               </div>
@@ -258,7 +258,7 @@
               <Column field="name" header="Producto" sortable>
                 <template #body="slotProps">
                   <div class="flex items-center gap-3">
-                    <span class="icon-[material-symbols--inventory-2-twotone] w-5 h-5 text-gray-500"></span>
+                    <span class="icon-[material-symbols--inventory-2] w-5 h-5 text-gray-500"></span>
                     <span class="font-semibold">{{ slotProps.data.name }}</span>
                   </div>
                 </template>

@@ -308,7 +308,7 @@ const frontendLayers = [
   { name: 'Layouts', desc: 'Estructura base (nav, header)', icon: 'icon-[ic--twotone-view-quilt]', color: 'text-indigo-700', bg: 'bg-indigo-50' },
   { name: 'Components', desc: 'Componentes reutilizables', icon: 'icon-[ic--twotone-widgets]', color: 'text-purple-700', bg: 'bg-purple-50' },
   { name: 'Composables', desc: 'Lógica reutilizable (hooks)', icon: 'icon-[ic--twotone-integration-instructions]', color: 'text-orange-700', bg: 'bg-orange-50' },
-  { name: 'Stores (Pinia)', desc: 'Estado global de la app', icon: 'icon-[ic--twotone-database]', color: 'text-green-700', bg: 'bg-green-50' },
+  { name: 'Stores (Pinia)', desc: 'Estado global de la app', icon: 'icon-[ic--twotone-storage]', color: 'text-green-700', bg: 'bg-green-50' },
 ]
 
 const quickStart = [

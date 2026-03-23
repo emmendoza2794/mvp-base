@@ -81,6 +81,27 @@
           </div>
         </div>
 
+        <!-- Ejemplos Section -->
+        <div>
+          <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">Ejemplos</h3>
+          <div class="space-y-1">
+            <NuxtLink
+              v-for="item in exampleItems"
+              :key="item.label"
+              :to="item.to"
+              @click="menuDrawerOpen = false"
+              class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all hover:bg-blue-50"
+              :class="{
+                'bg-blue-100 text-blue-700 font-semibold': $route.path === item.to,
+                'text-gray-700 hover:text-blue-600': $route.path !== item.to
+              }"
+            >
+              <span :class="item.icon + ' w-5 h-5'"></span>
+              <span class="text-sm">{{ item.label }}</span>
+            </NuxtLink>
+          </div>
+        </div>
+
         <!-- Configuración Section -->
         <div>
           <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">Configuración</h3>
@@ -160,6 +181,26 @@
           </div>
         </div>
 
+        <!-- Ejemplos Section -->
+        <div>
+          <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">Ejemplos</h3>
+          <div class="space-y-1">
+            <NuxtLink
+              v-for="item in exampleItems"
+              :key="item.label"
+              :to="item.to"
+              class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all hover:bg-blue-50"
+              :class="{
+                'bg-blue-100 text-blue-700 font-semibold': $route.path === item.to,
+                'text-gray-700 hover:text-blue-600': $route.path !== item.to
+              }"
+            >
+              <span :class="item.icon + ' w-5 h-5'"></span>
+              <span class="text-sm">{{ item.label }}</span>
+            </NuxtLink>
+          </div>
+        </div>
+
         <!-- Configuración Section -->
         <div>
           <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">Configuración</h3>
@@ -207,6 +248,11 @@ const utilitiesItems = [
   { to: '#', label: 'Facturación', icon: 'icon-[ic--twotone-receipt-long]' },
   { to: '#', label: 'Pagos', icon: 'icon-[ic--twotone-payments]' },
   { to: '#', label: 'Analytics', icon: 'icon-[ic--twotone-trending-up]' },
+]
+
+const exampleItems = [
+  { to: '/login-1', label: 'Login 1 (Card)', icon: 'icon-[ic--twotone-login]' },
+  { to: '/login-2', label: 'Login 2 (Split)', icon: 'icon-[ic--twotone-login]' },
 ]
 
 const configItems = [

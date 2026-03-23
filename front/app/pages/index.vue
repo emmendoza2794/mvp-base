@@ -306,7 +306,7 @@ const frontendLayers = [
   { name: 'Layouts', desc: 'Estructura base (nav, header)', icon: 'icon-[ic--twotone-view-quilt]', style: 'bg-indigo-500/10 border-indigo-500/30 text-indigo-300' },
   { name: 'Components', desc: 'Componentes reutilizables', icon: 'icon-[ic--twotone-widgets]', style: 'bg-purple-500/10 border-purple-500/30 text-purple-300' },
   { name: 'Composables', desc: 'Lógica compartida', icon: 'icon-[ic--twotone-integration-instructions]', style: 'bg-orange-500/10 border-orange-500/30 text-orange-300' },
-  { name: 'Stores (Pinia)', desc: 'Estado global reactivo', icon: 'icon-[ic--twotone-database]', style: 'bg-green-500/10 border-green-500/30 text-green-300' },
+  { name: 'Stores (Pinia)', desc: 'Estado global reactivo', icon: 'icon-[ic--twotone-storage]', style: 'bg-green-500/10 border-green-500/30 text-green-300' },
 ]
 
 const features = [
@@ -337,7 +337,7 @@ const features = [
   {
     title: 'Estado global con Pinia',
     desc: 'Gestión de estado reactiva, simple y con soporte TypeScript para toda la app.',
-    icon: 'icon-[ic--twotone-database]',
+    icon: 'icon-[ic--twotone-storage]',
     iconBg: 'bg-gradient-to-br from-green-500 to-green-700'
   },
   {
