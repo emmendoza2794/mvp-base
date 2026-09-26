@@ -1,5 +1,5 @@
 <template>
-  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+  <header id="app-header" class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
     <div class="px-4 py-3">
       <div class="flex items-center justify-between">
         <!-- Left: Branding -->
