@@ -65,7 +65,7 @@ Components   Utils
 - **Framework**: FastAPI 0.129.x
 - **ORM**: SQLAlchemy 2.0.x
 - **Validación**: Pydantic 2.x
-- **Base de datos**: PostgreSQL (psycopg2-binary)
+- **Base de datos**: PostgreSQL (psycopg 3)
 - **Autenticación**: JWT (PyJWT) + Passlib[bcrypt]
 - **Server**: Uvicorn 0.41.x (desarrollo) / Mangum 0.21.x (AWS Lambda)
 - **Python**: 3.12+
