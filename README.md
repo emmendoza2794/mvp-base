@@ -65,7 +65,7 @@ createdb mi_app
 ### Backend
 | Tecnología | Versión | Uso |
 |---|---|---|
-| Python | 3.12+ | Runtime (Lambda usa `python3.12`) |
+| Python | 3.12+ | Runtime (Lambda usa `python3.14`) |
 | FastAPI | 0.141 | Framework web |
 | SQLAlchemy | 2.1 | ORM |
 | psycopg | 3 | Driver PostgreSQL |
@@ -217,16 +217,24 @@ Busca íconos en [Iconify (ic twotone)](https://icon-sets.iconify.design/ic/?key
 
 Requisitos: AWS CLI configurado y AWS SAM CLI.
 
-1. Configura `DATABASE_URL` y `JWT_SECRET_KEY` en `back/template.yaml`.
-2. Despliega:
+1. Crea `back/.env.production` con los valores de producción:
 
 ```bash
 cd back
-./deploy.sh              # genera requirements.txt, sam build y sam deploy
-# primera vez: sam deploy --guided
+cp .env.example .env.production
+# DATABASE_URL de tu BD en la nube y JWT_SECRET_KEY con: openssl rand -hex 32
 ```
 
-La URL del API aparece en los outputs del stack.
+2. Despliega:
+
+```bash
+./deploy.sh                  # usa .env.production (o .env si no existe)
+./deploy.sh .env.staging     # o un archivo específico
+```
+
+`deploy.sh` genera `requirements.txt`, corre `sam build` y `sam deploy`. Le pasa las variables del `.env` como parámetros `NoEcho` del template, así que `template.yaml` no tiene credenciales. Falla si falta `DATABASE_URL`/`JWT_SECRET_KEY` o si el secret es el de ejemplo.
+
+La URL del API aparece en los outputs del stack (`MvpBaseApi`).
 
 ### Frontend (Cloudflare Workers)
 
@@ -263,7 +271,7 @@ Módulos `@primevue/nuxt-module` y `@pinia/nuxt`, el tema de PrimeVue en `app/as
 - ✅ Secrets en variables de entorno (`.env` está en `.gitignore`)
 - ⚠️ Usa un `JWT_SECRET_KEY` propio en producción (`openssl rand -hex 32`)
 - ⚠️ CORS permite todos los orígenes (`allow_origins=["*"]` en `back/src/main.py`). Restríngelo a tu dominio en producción.
-- ⚠️ No subas secretos reales en `template.yaml`. Usa parámetros de SAM o AWS Secrets Manager.
+- ✅ `template.yaml` no tiene credenciales: se inyectan desde el `.env` al desplegar (parámetros `NoEcho`)
 
 ## 📝 Convenciones de Código
 

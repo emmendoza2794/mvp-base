@@ -1,10 +1,32 @@
 Transform: AWS::Serverless-2016-10-31
 
+# Los valores sensibles llegan como parámetros desde deploy.sh (leídos del .env),
+# así no quedan escritos en este archivo. NoEcho evita que se muestren en CloudFormation.
+Parameters:
+  DatabaseUrl:
+    Type: String
+    NoEcho: true
+    Description: "Connection string de PostgreSQL"
+  JwtSecretKey:
+    Type: String
+    NoEcho: true
+    Description: "Secret key para firmar los JWT"
+  JwtAlgorithm:
+    Type: String
+    Default: HS256
+  JwtAccessTokenExpireMinutes:
+    Type: Number
+    Default: 10080
+  Debug:
+    Type: String
+    Default: 'False'
+    AllowedValues: ['True', 'False']
+
 Globals:
   Function:
     Timeout: 600
     MemorySize: 512
-    Runtime: python3.12
+    Runtime: python3.14
     Environment:
       Variables:
         TZ: "America/Bogota"
@@ -15,17 +37,13 @@ Resources:
     Properties:
       FunctionName: 'mvp-base-backend'
       Handler: lambda_handler.handler
-      Runtime: python3.12
-      Timeout: 600
-      MemorySize: 512
       Environment:
         Variables:
-          # Database Configuration
-          DATABASE_URL: 'postgresql://user:password@host:5432/dbname'
-
-          # Application Settings
-          DEBUG: 'False'
-          JWT_SECRET_KEY: 'change-this-secret-key'
+          DATABASE_URL: !Ref DatabaseUrl
+          DEBUG: !Ref Debug
+          JWT_SECRET_KEY: !Ref JwtSecretKey
+          JWT_ALGORITHM: !Ref JwtAlgorithm
+          JWT_ACCESS_TOKEN_EXPIRE_MINUTES: !Ref JwtAccessTokenExpireMinutes
 
       Events:
         Api:
