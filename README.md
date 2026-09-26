@@ -1,418 +1,274 @@
 # MVP Base
 
-> Template Full-stack con arquitectura en capas, diseñado para despliegue serverless en AWS Lambda y Cloudflare Workers.
+> Template full-stack (FastAPI + Nuxt) con arquitectura en capas, listo para desplegar serverless en AWS Lambda y Cloudflare Workers.
 
 ## 📋 Tabla de Contenidos
 
 - [Descripción](#-descripción)
-- [Arquitectura](#-arquitectura)
-- [Stack Tecnológico](#-stack-tecnológico)
+- [Inicio rápido](#-inicio-rápido)
+- [Stack Tecnológico](#️-stack-tecnológico)
+- [Arquitectura](#️-arquitectura)
 - [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Requisitos](#-requisitos)
-- [Instalación](#-instalación)
 - [Desarrollo](#-desarrollo)
 - [Despliegue](#-despliegue)
-- [Configuración](#-configuración)
+- [Configuración](#️-configuración)
+- [Seguridad](#-seguridad)
 
 ## 🎯 Descripción
 
-**MVP Base** es un proyecto base para construcción rápida de MVPs siguiendo mejores prácticas de desarrollo. Incluye:
+**MVP Base** es un proyecto base para construir MVPs rápido siguiendo buenas prácticas. Incluye:
 
-- ✅ Backend con arquitectura en capas (Layered Architecture)
-- ✅ Frontend moderno con Nuxt 4
-- ✅ Sistema de autenticación JWT con Form Data
-- ✅ Base de datos PostgreSQL con SQLAlchemy
-- ✅ Health check con verificación de BD
-- ✅ UI components con PrimeVue y Tailwind CSS
-- ✅ Listo para despliegue serverless
-- ✅ TypeScript en frontend
-- ✅ Gestión de estado con Pinia
-- ✅ Soporte PWA
-- ✅ Script de setup automático
-- ✅ Navegación responsive: sidebar desktop + barra inferior mobile + drawer con overlay
-- ✅ Header global con avatar de usuario y menú contextual
-- ✅ Landing page y página de documentación incluidas
+- ✅ Backend FastAPI con arquitectura en capas (routes → services → repositories → models)
+- ✅ Autenticación JWT (registro, login y `/auth/me`) con hash bcrypt
+- ✅ PostgreSQL con SQLAlchemy 2 y health check con verificación de BD
+- ✅ Frontend Nuxt 4 + TypeScript con PrimeVue, Tailwind CSS 4 e Iconify
+- ✅ Sidebar comprimible (solo íconos, con tooltips) que recuerda su estado
+- ✅ Navegación mobile: barra inferior + drawer
+- ✅ Header global con avatar y menú de usuario
+- ✅ Páginas de ejemplo: landing, dashboard demo, documentación, configuraciones y 2 logins
+- ✅ Estado con Pinia y soporte PWA
+- ✅ `dev.sh` para levantar back y front con un solo comando
+- ✅ `setup-project.sh` para renombrar el template a tu proyecto
 
-## 🏗️ Arquitectura
+## ⚡ Inicio rápido
 
-### Backend (Arquitectura en Capas)
+**Requisitos:** Python 3.12+, [Poetry](https://python-poetry.org/), Node.js 22+, [Bun](https://bun.sh/) (o npm) y PostgreSQL 14+.
 
+```bash
+# 1. Crea tu repo desde el template ("Use this template" en GitHub) y clónalo
+git clone <tu-nuevo-repo-url>
+cd <tu-proyecto>
+
+# 2. Personaliza el proyecto (nombre, autor, .env, dependencias)
+./setup-project.sh
+
+# 3. Configura DATABASE_URL en back/.env y crea la base de datos
+createdb mi_app
+
+# 4. Levanta back y front juntos
+./dev.sh
 ```
-Routes → Services → Repositories → Models
-   ↓         ↓
-Schemas   Core (Config, DB, Utils)
-```
 
-**Capas:**
-- **Routes**: Manejo de requests/responses HTTP (Form Data)
-- **Services**: Lógica de negocio
-- **Repositories**: Acceso a datos y operaciones de BD
-- **Models**: Definición de entidades (SQLAlchemy)
-- **Schemas**: Validación y serialización (Pydantic)
-- **Core**: Configuración, database, autenticación JWT
+- Frontend: http://localhost:3000
+- API: http://localhost:8000 — docs interactiva en http://localhost:8000/docs
 
-### Frontend (Nuxt 4 + PrimeVue)
+### ¿Qué hace `setup-project.sh`?
 
-```
-Pages → Composables → Stores (Pinia)
-  ↓           ↓
-Components   Utils
-```
+- Pide el nombre del proyecto (`mi-app`), el nombre visible (`Mi App`), la descripción y el autor.
+- Reemplaza `MVP Base` / `mvp-base` / `mvp_base` / `MvpBase` en todo el código: UI, API, `template.yaml`, `pyproject.toml`, `package.json`, etc.
+- Crea `back/.env` desde `back/.env.example` con un `JWT_SECRET_KEY` aleatorio.
+- Opcionalmente instala las dependencias (`poetry install` y `bun install`/`npm install`).
+- Funciona en macOS y Linux.
 
 ## 🛠️ Stack Tecnológico
 
 ### Backend
-- **Framework**: FastAPI 0.129.x
-- **ORM**: SQLAlchemy 2.0.x
-- **Validación**: Pydantic 2.x
-- **Base de datos**: PostgreSQL (psycopg 3)
-- **Autenticación**: JWT (PyJWT) + Passlib[bcrypt]
-- **Server**: Uvicorn 0.41.x (desarrollo) / Mangum 0.21.x (AWS Lambda)
-- **Python**: 3.12+
-- **Health Check**: Verificación de estado de BD incluida
+| Tecnología | Versión | Uso |
+|---|---|---|
+| Python | 3.12+ | Runtime (Lambda usa `python3.12`) |
+| FastAPI | 0.141 | Framework web |
+| SQLAlchemy | 2.1 | ORM |
+| psycopg | 3 | Driver PostgreSQL |
+| Pydantic / pydantic-settings | 2.13 / 2.15 | Validación y configuración |
+| PyJWT + bcrypt | 2.15 / 5 | Tokens JWT y hash de contraseñas |
+| Uvicorn | 0.54 | Servidor de desarrollo |
+| Mangum | 0.22 | Adaptador ASGI para AWS Lambda |
+| Poetry | 2.x | Gestor de dependencias |
 
 ### Frontend
-- **Framework**: Nuxt 4.3.x
-- **UI Library**: PrimeVue 4.5.x
-- **Estilos**: Tailwind CSS 4.x + TailwindCSS PrimeUI
-- **Iconos**: @iconify/json + @iconify/tailwind4
-- **Estado**: Pinia 3.x
-- **PWA**: @vite-pwa/nuxt
-- **TypeScript**: Soporte completo
-- **Navegación**: Sidebar desktop fijo + barra inferior mobile + drawer con overlay (PrimeVue Drawer)
+| Tecnología | Versión | Uso |
+|---|---|---|
+| Nuxt | 4.5 | Framework (Vue 3 + TypeScript) |
+| PrimeVue | 4.5 | Componentes UI (tema en `app/assets/themes/theme.js`) |
+| Tailwind CSS | 4.3 | Estilos (+ `tailwindcss-primeui`) |
+| Iconify | — | Íconos vía `@iconify/tailwind4` (`icon-[ic--twotone-home]`) |
+| Pinia | 4 | Estado global |
+| @vite-pwa/nuxt | 1.1 | PWA |
 
-### DevOps & Deployment
-- **Backend**: AWS SAM + Lambda
+> PrimeVue se mantiene en la línea 4.x a propósito: PrimeVue 5 cambió a una licencia comercial que requiere license key. La 4.x es la última con licencia MIT.
+
+### Despliegue
+- **Backend**: AWS SAM + Lambda + HTTP API Gateway
 - **Frontend**: Cloudflare Workers (Wrangler)
-- **Package Manager Backend**: Poetry
-- **Package Manager Frontend**: npm
+
+## 🏗️ Arquitectura
+
+### Backend (arquitectura en capas)
+
+```
+Routes → Services → Repositories → Models
+   ↓         ↓
+Schemas   Core (config, database, auth)
+```
+
+- **Routes**: endpoints HTTP (reciben Form Data)
+- **Services**: lógica de negocio
+- **Repositories**: acceso a datos
+- **Models**: entidades SQLAlchemy
+- **Schemas**: validación y serialización con Pydantic
+- **Core**: configuración, conexión a BD y autenticación JWT
+
+### Frontend (Nuxt 4)
+
+```
+Pages → Composables → Stores (Pinia)
+  ↓
+Components (AppHeader, AppNavigation, NavSection)
+```
 
 ## 📁 Estructura del Proyecto
 
 ```
 mvp-base/
-├── back/                      # Backend (FastAPI)
+├── back/                         # Backend (FastAPI)
 │   ├── src/
-│   │   ├── core/             # Configuración, base de datos y auth
-│   │   │   ├── config.py     # Settings (env vars, JWT, etc)
-│   │   │   ├── database.py   # Database connection
-│   │   │   ├── auth.py       # JWT & password hashing
-│   │   │   └── __init__.py
-│   │   ├── models/           # SQLAlchemy models
-│   │   ├── repositories/     # Data access layer
-│   │   ├── routes/           # API endpoints
-│   │   ├── schemas/          # Pydantic schemas (DTOs)
-│   │   ├── services/         # Business logic
-│   │   └── main.py           # FastAPI app
-│   ├── sql/                  # Scripts SQL
-│   ├── lambda_handler.py     # AWS Lambda handler
-│   ├── pyproject.toml        # Poetry dependencies
-│   ├── requirements.txt      # Pip dependencies
-│   ├── samconfig.toml        # SAM configuration
-│   ├── template.yaml         # SAM/CloudFormation template
-│   ├── deploy.sh             # Deployment script
-│   └── README.md
+│   │   ├── core/                 # config.py, database.py, auth.py
+│   │   ├── models/               # Modelos SQLAlchemy
+│   │   ├── repositories/         # Acceso a datos
+│   │   ├── routes/               # Endpoints
+│   │   ├── schemas/              # Schemas Pydantic
+│   │   ├── services/             # Lógica de negocio
+│   │   └── main.py               # App FastAPI (CORS, health, routers)
+│   ├── sql/init.sql              # Script SQL inicial (opcional)
+│   ├── lambda_handler.py         # Handler de AWS Lambda (Mangum)
+│   ├── template.yaml             # Template SAM/CloudFormation
+│   ├── deploy.sh                 # Genera requirements.txt, build y deploy
+│   ├── pyproject.toml            # Dependencias (Poetry)
+│   └── .env.example              # Variables de entorno de ejemplo
 │
-├── front/                     # Frontend (Nuxt)
+├── front/                        # Frontend (Nuxt 4)
 │   ├── app/
 │   │   ├── assets/
-│   │   │   ├── css/
-│   │   │   │   └── main.css        # Tailwind imports
-│   │   │   └── themes/
-│   │   │       └── theme.js        # PrimeVue theme
+│   │   │   ├── css/main.css      # Tailwind + PrimeUI + Iconify
+│   │   │   └── themes/theme.js   # Preset del tema PrimeVue
 │   │   ├── components/
-│   │   │   ├── AppHeader.vue       # Header global (avatar, menú usuario)
-│   │   │   └── AppNavigation.vue   # Sidebar desktop + barra mobile + drawer
-│   │   ├── layouts/
-│   │   │   └── default.vue         # Layout principal (header + nav + slot)
-│   │   └── pages/
-│   │       ├── index.vue           # Landing page
-│   │       ├── demo.vue            # Demo de componentes
-│   │       └── docs.vue            # Documentación del template
-│   ├── nuxt.config.ts              # Nuxt configuration
-│   ├── tailwind.config.js          # Tailwind configuration
-│   ├── package.json
-│   └── README.md
+│   │   │   ├── AppHeader.vue     # Header global (avatar, menú usuario)
+│   │   │   ├── AppNavigation.vue # Sidebar desktop + barra mobile + drawer
+│   │   │   └── NavSection.vue    # Sección del menú (tooltips al estar comprimido)
+│   │   ├── composables/
+│   │   │   └── useSidebar.ts     # Estado del sidebar (persistido en localStorage)
+│   │   ├── layouts/default.vue   # Header + navegación + contenido
+│   │   └── pages/                # index, demo, docs, settings, login-1, login-2
+│   ├── nuxt.config.ts
+│   └── package.json
 │
-├── .gitignore
-└── README.md                  # Este archivo
-```
-
-## 📋 Requisitos
-
-### Backend
-- Python 3.12 o superior
-- PostgreSQL 14+
-- Poetry (opcional) o pip
-
-### Frontend
-- Node.js 18+ / Bun
-- npm, pnpm, yarn o bun
-
-### Despliegue
-- AWS CLI + SAM CLI (para backend)
-- Wrangler CLI (para frontend)
-
-## 🚀 Instalación
-
-### 1. Usar como Template
-
-**Opción A: Desde GitHub (Recomendado)**
-1. Click en "Use this template" → "Create a new repository"
-2. Clona tu nuevo repositorio
-3. Ejecuta el script de setup:
-
-```bash
-git clone <tu-nuevo-repo-url>
-cd <tu-proyecto>
-./setup-project.sh
-```
-
-**Opción B: Clone directo**
-```bash
-git clone <repository-url>
-cd mvp-base
-./setup-project.sh
-```
-
-El script `setup-project.sh` te preguntará:
-- Nombre del proyecto
-- Descripción
-- Autor y email
-- Y configurará automáticamente todos los archivos
-
-### 2. Backend Setup
-
-```bash
-cd back
-
-# Con Poetry (recomendado)
-poetry install
-
-# O con pip
-pip install -r requirements.txt
-```
-
-**Configurar variables de entorno:**
-
-```bash
-# Copiar archivo de ejemplo
-cp back/.env.example back/.env
-
-# Editar back/.env con tus valores reales
-# Especialmente DATABASE_URL y JWT_SECRET_KEY
-```
-
-Variables en `back/.env`:
-
-```env
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/mvp_base
-
-# Application
-DEBUG=True
-
-# JWT (se genera automáticamente con setup-project.sh)
-JWT_SECRET_KEY=your-super-secret-key-change-in-production
-JWT_ALGORITHM=HS256
-JWT_ACCESS_TOKEN_EXPIRE_MINUTES=10080
-```
-
-### 3. Frontend Setup
-
-```bash
-cd front
-
-# Instalar dependencias
-npm install
-# o
-pnpm install
-# o
-yarn install
-# o
-bun install
+├── dev.sh                        # Levanta back + front con logs prefijados
+├── setup-project.sh              # Personaliza el template
+└── README.md
 ```
 
 ## 💻 Desarrollo
 
-### Backend
+### Todo junto
 
 ```bash
+./dev.sh
+```
+
+Levanta `uvicorn --reload` (back) y `bun run dev` (front) en paralelo. Cada log sale con su prefijo de color (`[back]` / `[front]`). Con `Ctrl+C` se cierran ambos.
+
+### Por separado
+
+```bash
+# Backend
 cd back
-
-# Iniciar servidor de desarrollo
-uvicorn src.main:app --reload --port 8000
-
-# Con Poetry
+poetry install
 poetry run uvicorn src.main:app --reload --port 8000
-```
 
-API disponible en: `http://localhost:8000`
-Docs interactiva: `http://localhost:8000/docs`
-Health check: `http://localhost:8000/health`
-
-**Endpoints de autenticación:**
-
-```bash
-# Registrar usuario (Form Data)
-POST /auth/register
-Content-Type: multipart/form-data
-  email: user@example.com
-  password: secreto123
-  name: Juan Pérez
-
-# Login (Form Data)
-POST /auth/login
-Content-Type: multipart/form-data
-  email: user@example.com
-  password: secreto123
-
-# Obtener usuario actual (requiere token)
-GET /auth/me
-Authorization: Bearer <token>
-```
-
-**Verificar estado:**
-
-```bash
-# Health check con estado de base de datos
-curl http://localhost:8000/health
-
-# Respuesta:
-{
-  "status": "healthy",        # o "degraded" si BD desconectada
-  "service": "MVP Base API",
-  "version": "1.0.0",
-  "database": "connected"     # o "disconnected"
-}
-```
-
-### Frontend
-
-```bash
+# Frontend
 cd front
-
-# Iniciar servidor de desarrollo
-npm run dev
-
-# O con otros package managers
-pnpm dev
-yarn dev
-bun run dev
+bun install        # o npm install
+bun run dev        # o npm run dev
 ```
 
-App disponible en: `http://localhost:3000`
+Las tablas se crean automáticamente al iniciar el backend si hay conexión a la BD (`Base.metadata.create_all`). También puedes usar `back/sql/init.sql`.
+
+### Endpoints
+
+| Método | Ruta | Descripción |
+|---|---|---|
+| `GET` | `/` | Mensaje de bienvenida |
+| `GET` | `/health` | Estado del servicio y de la BD (`healthy` / `degraded`) |
+| `POST` | `/auth/register` | Registro (Form Data: `email`, `password`, `name`) |
+| `POST` | `/auth/login` | Login (Form Data: `email`, `password`) → JWT |
+| `GET` | `/auth/me` | Usuario actual (`Authorization: Bearer <token>`) |
+
+```bash
+curl -X POST http://localhost:8000/auth/login \
+  -F email=user@example.com -F password=secreto123
+```
+
+### Agregar opciones al menú
+
+Los ítems del menú están en `front/app/components/AppNavigation.vue`, agrupados por sección:
+
+```ts
+const mainNavItems = [
+  { to: '/demo', label: 'Dashboard Demo', icon: 'icon-[ic--twotone-dashboard]' },
+  { to: '#', label: 'Reportes', icon: 'icon-[ic--twotone-bar-chart]' }, // '#' = deshabilitado
+]
+```
+
+Busca íconos en [Iconify (ic twotone)](https://icon-sets.iconify.design/ic/?keyword=twotone).
 
 ## 🚢 Despliegue
 
 ### Backend (AWS Lambda)
 
-**Prerrequisitos:**
-- AWS CLI configurado
-- AWS SAM CLI instalado
+Requisitos: AWS CLI configurado y AWS SAM CLI.
 
-**Desplegar:**
+1. Configura `DATABASE_URL` y `JWT_SECRET_KEY` en `back/template.yaml`.
+2. Despliega:
 
 ```bash
 cd back
-
-# Build y deploy
-sam build
-sam deploy --guided
-
-# O usar el script
-./deploy.sh
+./deploy.sh              # genera requirements.txt, sam build y sam deploy
+# primera vez: sam deploy --guided
 ```
 
-**Configurar variables en template.yaml** antes del despliegue:
-- `DATABASE_URL`: Connection string de PostgreSQL
-- `JWT_SECRET_KEY`: Secret key para JWT
-- `DEBUG`: false en producción
+La URL del API aparece en los outputs del stack.
 
 ### Frontend (Cloudflare Workers)
 
-**Prerrequisitos:**
-- Wrangler CLI instalado y autenticado
-
-**Desplegar:**
+Requisitos: Wrangler autenticado (`npx wrangler login`).
 
 ```bash
 cd front
-
-# Build y deploy
-npm run deploy
-
-# O manualmente
-npm run build
-wrangler deploy .output/server/index.mjs --assets .output/public
-```
-
-**Preview local:**
-
-```bash
-npm run preview
+npm run deploy           # build + wrangler deploy
+npm run preview          # probar el build localmente con wrangler
 ```
 
 ## ⚙️ Configuración
 
-### Backend Configuration
+### Backend — `back/.env`
 
-Archivo: `back/src/core/config.py`
-
-```python
-class Settings(BaseSettings):
-    # Database
-    DATABASE_URL: str
-
-    # Application
-    DEBUG: bool
-
-    # JWT
-    JWT_SECRET_KEY: str
-    JWT_ALGORITHM: str = "HS256"
-    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 10080  # 7 días
+```env
+DATABASE_URL=postgresql://user:password@localhost:5432/mvp_base
+DEBUG=True
+JWT_SECRET_KEY=change-this-secret-key-in-production
+JWT_ALGORITHM=HS256
+JWT_ACCESS_TOKEN_EXPIRE_MINUTES=10080   # 7 días
 ```
 
-### Frontend Configuration
+Se leen con `pydantic-settings` en `back/src/core/config.py`.
 
-Archivo: `front/nuxt.config.ts`
+### Frontend — `front/nuxt.config.ts`
 
-```typescript
-export default defineNuxtConfig({
-  modules: [
-    '@primevue/nuxt-module',
-    '@pinia/nuxt',
-  ],
-
-  primevue: {
-    importTheme: { from: '~/assets/themes/theme.js' },
-  },
-
-  // ... más configuración
-})
-```
-
-## 📝 Convenciones de Código
-
-### Backend (Python)
-- PEP 8 style guide
-- Type hints en funciones
-- Docstrings en clases y funciones públicas
-- Nombres descriptivos en snake_case
-
-### Frontend (TypeScript)
-- ESLint + Prettier
-- Composables para lógica reutilizable
-- Componentes SFC (Single File Components)
-- camelCase para variables, PascalCase para componentes
+Módulos `@primevue/nuxt-module` y `@pinia/nuxt`, el tema de PrimeVue en `app/assets/themes/theme.js` y Tailwind vía `@tailwindcss/vite`.
 
 ## 🔐 Seguridad
 
-- ✅ Autenticación JWT
-- ✅ Hash de contraseñas con bcrypt
+- ✅ Autenticación JWT y contraseñas con bcrypt
 - ✅ Validación de entrada con Pydantic
-- ✅ Variables de entorno para secrets
-- ⚠️ **IMPORTANTE**: Cambiar `JWT_SECRET_KEY` en producción
+- ✅ Secrets en variables de entorno (`.env` está en `.gitignore`)
+- ⚠️ Usa un `JWT_SECRET_KEY` propio en producción (`openssl rand -hex 32`)
+- ⚠️ CORS permite todos los orígenes (`allow_origins=["*"]` en `back/src/main.py`). Restríngelo a tu dominio en producción.
+- ⚠️ No subas secretos reales en `template.yaml`. Usa parámetros de SAM o AWS Secrets Manager.
+
+## 📝 Convenciones de Código
+
+- **Backend**: PEP 8, type hints, docstrings en funciones públicas y snake_case.
+- **Frontend**: `<script setup lang="ts">`, composables para lógica reutilizable, camelCase para variables y PascalCase para componentes.
 
 ## 📄 Licencia
 
@@ -422,7 +278,3 @@ ISC
 
 **Edinson Mendoza**
 - Email: emmendoza2794@gmail.com
-
----
-
-**Nota**: Este es un proyecto base. Personaliza según tus necesidades específicas.
