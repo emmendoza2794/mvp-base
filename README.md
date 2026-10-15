@@ -6,6 +6,7 @@
 
 - [Descripción](#-descripción)
 - [Inicio rápido](#-inicio-rápido)
+- [Elegir el frontend](#-elegir-el-frontend)
 - [Stack Tecnológico](#️-stack-tecnológico)
 - [Arquitectura](#️-arquitectura)
 - [Estructura del Proyecto](#-estructura-del-proyecto)
@@ -64,6 +65,55 @@ createdb mi_app
 - Opcionalmente instala las dependencias (`poetry install` y `bun install`/`npm install`).
 - Si ya lo corriste antes (ya existe `front/`), no vuelve a preguntar por el frontend.
 - Funciona en macOS y Linux.
+
+## 🎨 Elegir el frontend
+
+El template trae dos frontends con las mismas pantallas y el mismo diseño. Solo cambia la tecnología:
+
+| | Vue (`front-vue/`) | React (`front-react/`) |
+|---|---|---|
+| Framework | Nuxt 4 (Vue 3) | Vite + React 19 |
+| Rutas | Basadas en archivos (`app/pages/`) | React Router (`src/router.tsx`) |
+| Componentes UI | PrimeVue 4 | PrimeReact 10 |
+| Estado global | Pinia | Zustand |
+| Lógica reutilizable | Composables | Hooks |
+| Estilos e íconos | Tailwind CSS 4 + Iconify | Tailwind CSS 4 + Iconify |
+| Despliegue | Cloudflare Workers | Cloudflare Workers (SPA) |
+
+### Al crear tu proyecto
+
+Corre `./setup-project.sh`. Después de los datos del proyecto te pregunta:
+
+```
+🎨 Frontend:
+  1) Vue   — Nuxt 4 + PrimeVue 4
+  2) React — Vite + React 19 + PrimeReact 10
+Elige el frontend (1/2) [1]:
+```
+
+- Escribe `1` (o Enter) para Vue, o `2` para React.
+- La carpeta elegida se renombra a `front/` y la otra se elimina. Así tu proyecto queda con un solo frontend y todos los comandos (`./dev.sh`, `cd front && npm run deploy`, etc.) funcionan igual con cualquiera de los dos.
+- El resumen antes de confirmar muestra la elección (`Frontend: react (front-react/ → front/)`). Si respondes `n`, no se cambia nada.
+
+### Probar los dos antes de decidir
+
+Mientras no hayas corrido el setup, puedes levantar cualquiera de los dos:
+
+```bash
+./dev.sh          # back + front-vue
+./dev.sh react    # back + front-react
+```
+
+> Instala antes las dependencias del frontend que vayas a probar (`cd front-react && bun install`).
+
+### Cambiar de frontend después
+
+El setup borra el frontend que no elegiste, así que no se puede volver a elegir con el script. Si necesitas cambiar:
+
+1. Copia la carpeta `front-vue/` o `front-react/` desde este repositorio template.
+2. Reemplaza tu `front/` con ella.
+3. Corre `cd front && bun install`.
+4. Renombra a mano `MVP Base` / `mvp-base` en los archivos del nuevo frontend.
 
 ## 🛠️ Stack Tecnológico
 
