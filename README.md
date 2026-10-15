@@ -64,7 +64,7 @@ createdb mi_app
 - Crea `back/.env` desde `back/.env.example` con un `JWT_SECRET_KEY` aleatorio.
 - Opcionalmente instala las dependencias (`poetry install` y `bun install`/`npm install`).
 - Si ya lo corriste antes (ya existe `front/`), no vuelve a preguntar por el frontend.
-- Funciona en macOS y Linux.
+- Funciona en macOS y Linux. En Windows usa `setup-project.bat` (hace lo mismo, ver [Windows](#-windows)).
 
 ## 🎨 Elegir el frontend
 
@@ -103,6 +103,8 @@ Mientras no hayas corrido el setup, puedes levantar cualquiera de los dos:
 ./dev.sh          # back + front-vue
 ./dev.sh react    # back + front-react
 ```
+
+En Windows: `dev.bat` y `dev.bat react`.
 
 > Instala antes las dependencias del frontend que vayas a probar (`cd front-react && bun install`).
 
@@ -250,6 +252,21 @@ mvp-base/
 Levanta `uvicorn --reload` (back) y `bun run dev` (front) en paralelo. Cada log sale con su prefijo de color (`[back]` / `[front]`). Con `Ctrl+C` se cierran ambos.
 
 Usa `front/`. En el template, mientras aún existen los dos frontends, usa `front-vue/` por defecto; con `./dev.sh react` usa `front-react/`.
+
+### 🪟 Windows
+
+Los dos scripts tienen versión `.bat` para `cmd` o PowerShell:
+
+```bat
+setup-project.bat
+dev.bat
+```
+
+En el template, antes del setup, `dev.bat react` usa `front-react/`.
+
+- `setup-project.bat` hace las mismas preguntas y los mismos cambios que `setup-project.sh`. Edita los archivos con PowerShell, que viene incluido en Windows, para respetar UTF-8.
+- `dev.bat` levanta el back en segundo plano y el front en primer plano en la misma consola. `Ctrl+C` detiene ambos (si cmd pregunta "¿Terminar el trabajo por lotes?", responde `S`). A diferencia de `dev.sh`, los logs no llevan prefijo `[back]`/`[front]`.
+- `back/deploy.sh` sigue siendo un script bash: en Windows córrelo desde Git Bash o WSL.
 
 ### Por separado
 

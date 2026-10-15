@@ -134,7 +134,7 @@ info "Renombrando 'MVP Base' → '$DISPLAY_NAME' en el código..."
 FILES=()
 while IFS= read -r file; do
     FILES+=("$file")
-done < <(git ls-files --cached --others --exclude-standard 2>/dev/null | grep -v -E '(^setup-project\.sh$|\.lock$|package-lock\.json$)' \
+done < <(git ls-files --cached --others --exclude-standard 2>/dev/null | grep -v -E '(^setup-project\.(sh|bat)$|\.lock$|package-lock\.json$)' \
     | while IFS= read -r f; do [ -f "$f" ] && grep -Il -E 'MVP Base|mvp-base|mvp_base|MvpBase' "$f" 2>/dev/null || true; done)
 
 if [ ${#FILES[@]} -gt 0 ]; then
