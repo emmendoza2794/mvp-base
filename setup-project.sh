@@ -58,7 +58,14 @@ echo "=================================="
 echo ""
 
 # Validaciones previas
-[ -f back/pyproject.toml ] && [ -f front/package.json ] || fail "Ejecuta este script desde la raíz del proyecto."
+[ -f back/pyproject.toml ] || fail "Ejecuta este script desde la raíz del proyecto."
+if [ -f front/package.json ]; then
+    FRONTEND=""  # El frontend ya fue elegido en una ejecución anterior
+elif [ -f front-vue/package.json ] && [ -f front-react/package.json ]; then
+    FRONTEND="pending"
+else
+    fail "No se encontró el frontend (front/ o front-vue/ + front-react/)."
+fi
 
 if ! grep -q '^name = "mvp-base"' back/pyproject.toml; then
     warn "Parece que el proyecto ya fue configurado (back/pyproject.toml no se llama 'mvp-base')."
@@ -85,12 +92,27 @@ DESCRIPTION="$(ask "📝 Descripción del proyecto")"
 AUTHOR_NAME="$(ask "👤 Nombre del autor" "$(git config user.name 2>/dev/null || true)")"
 AUTHOR_EMAIL="$(ask "📧 Email del autor" "$(git config user.email 2>/dev/null || true)")"
 
+if [ "$FRONTEND" = "pending" ]; then
+    echo ""
+    echo "🎨 Frontend:"
+    echo "  1) Vue   — Nuxt 4 + PrimeVue 4"
+    echo "  2) React — Vite + React 19 + PrimeReact 10"
+    while true; do
+        case "$(ask "Elige el frontend (1/2)" "1")" in
+            1|vue|Vue) FRONTEND="vue"; break ;;
+            2|react|React) FRONTEND="react"; break ;;
+            *) warn "Responde 1 (Vue) o 2 (React)." ;;
+        esac
+    done
+fi
+
 echo ""
 echo "Resumen:"
 echo "  Proyecto:     $PROJECT_NAME"
 echo "  Nombre:       $DISPLAY_NAME"
 echo "  Base de datos: $SNAKE_NAME"
 echo "  Lambda:       $PROJECT_NAME-backend"
+[ -n "$FRONTEND" ] && echo "  Frontend:     $FRONTEND (front-$FRONTEND/ → front/)"
 echo "  Autor:        ${AUTHOR_NAME:-(sin cambios)} ${AUTHOR_EMAIL:+<$AUTHOR_EMAIL>}"
 echo ""
 CONFIRM="$(ask "¿Aplicar cambios? (S/n)" "S")"
@@ -98,12 +120,21 @@ CONFIRM="$(ask "¿Aplicar cambios? (S/n)" "S")"
 
 echo ""
 
-# 1. Reemplazar nombres del template en todos los archivos versionados
+# 0. Dejar solo el frontend elegido en front/
+if [ -n "$FRONTEND" ]; then
+    OTHER_FRONTEND="$([ "$FRONTEND" = "vue" ] && echo "react" || echo "vue")"
+    info "Usando el frontend $FRONTEND (se elimina front-$OTHER_FRONTEND/)..."
+    rm -rf "front-$OTHER_FRONTEND"
+    mv "front-$FRONTEND" front
+    ok "Frontend en front/"
+fi
+
+# 1. Reemplazar nombres del template en todos los archivos del proyecto (versionados o nuevos, sin ignorados)
 info "Renombrando 'MVP Base' → '$DISPLAY_NAME' en el código..."
 FILES=()
 while IFS= read -r file; do
     FILES+=("$file")
-done < <(git ls-files 2>/dev/null | grep -v -E '(^setup-project\.sh$|\.lock$|package-lock\.json$)' \
+done < <(git ls-files --cached --others --exclude-standard 2>/dev/null | grep -v -E '(^setup-project\.sh$|\.lock$|package-lock\.json$)' \
     | while IFS= read -r f; do [ -f "$f" ] && grep -Il -E 'MVP Base|mvp-base|mvp_base|MvpBase' "$f" 2>/dev/null || true; done)
 
 if [ ${#FILES[@]} -gt 0 ]; then

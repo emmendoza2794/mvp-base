@@ -1,0 +1,16 @@
+@keyframes floating-1 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+@keyframes floating-2 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-25px) rotate(-5deg); }
+}
+@keyframes floating-3 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(3deg); }
+}
+
+.floating-1 { animation: floating-1 6s ease-in-out infinite; }
+.floating-2 { animation: floating-2 7s ease-in-out infinite; }
+.floating-3 { animation: floating-3 5s ease-in-out infinite; }

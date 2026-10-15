@@ -1,6 +1,6 @@
 # MVP Base
 
-> Template full-stack (FastAPI + Nuxt) con arquitectura en capas, listo para desplegar serverless en AWS Lambda y Cloudflare Workers.
+> Template full-stack (FastAPI + Nuxt o React) con arquitectura en capas, listo para desplegar serverless en AWS Lambda y Cloudflare Workers.
 
 ## 📋 Tabla de Contenidos
 
@@ -21,14 +21,17 @@
 - ✅ Backend FastAPI con arquitectura en capas (routes → services → repositories → models)
 - ✅ Autenticación JWT (registro, login y `/auth/me`) con hash bcrypt
 - ✅ PostgreSQL con SQLAlchemy 2 y health check con verificación de BD
-- ✅ Frontend Nuxt 4 + TypeScript con PrimeVue, Tailwind CSS 4 e Iconify
+- ✅ Dos frontends a elegir con las mismas pantallas:
+  - **Vue**: Nuxt 4 + PrimeVue 4 + Pinia
+  - **React**: Vite + React 19 + React Router + PrimeReact 10 + Zustand
+  - Ambos con TypeScript, Tailwind CSS 4 e Iconify
 - ✅ Sidebar comprimible (solo íconos, con tooltips) que recuerda su estado
 - ✅ Navegación mobile: barra inferior + drawer
 - ✅ Header global con avatar y menú de usuario
 - ✅ Páginas de ejemplo: landing, dashboard demo, documentación, configuraciones y 2 logins
-- ✅ Estado con Pinia y soporte PWA
+- ✅ Soporte PWA
 - ✅ `dev.sh` para levantar back y front con un solo comando
-- ✅ `setup-project.sh` para renombrar el template a tu proyecto
+- ✅ `setup-project.sh` para elegir el frontend (Vue o React) y renombrar el template a tu proyecto
 
 ## ⚡ Inicio rápido
 
@@ -39,7 +42,7 @@
 git clone <tu-nuevo-repo-url>
 cd <tu-proyecto>
 
-# 2. Personaliza el proyecto (nombre, autor, .env, dependencias)
+# 2. Personaliza el proyecto (frontend Vue o React, nombre, autor, .env, dependencias)
 ./setup-project.sh
 
 # 3. Configura DATABASE_URL en back/.env y crea la base de datos
@@ -55,9 +58,11 @@ createdb mi_app
 ### ¿Qué hace `setup-project.sh`?
 
 - Pide el nombre del proyecto (`mi-app`), el nombre visible (`Mi App`), la descripción y el autor.
+- Pregunta qué frontend usar: **Vue** (`front-vue/`) o **React** (`front-react/`). El elegido queda en `front/` y el otro se elimina.
 - Reemplaza `MVP Base` / `mvp-base` / `mvp_base` / `MvpBase` en todo el código: UI, API, `template.yaml`, `pyproject.toml`, `package.json`, etc.
 - Crea `back/.env` desde `back/.env.example` con un `JWT_SECRET_KEY` aleatorio.
 - Opcionalmente instala las dependencias (`poetry install` y `bun install`/`npm install`).
+- Si ya lo corriste antes (ya existe `front/`), no vuelve a preguntar por el frontend.
 - Funciona en macOS y Linux.
 
 ## 🛠️ Stack Tecnológico
@@ -75,7 +80,7 @@ createdb mi_app
 | Mangum | 0.22 | Adaptador ASGI para AWS Lambda |
 | Poetry | 2.x | Gestor de dependencias |
 
-### Frontend
+### Frontend Vue (`front-vue/`)
 | Tecnología | Versión | Uso |
 |---|---|---|
 | Nuxt | 4.5 | Framework (Vue 3 + TypeScript) |
@@ -85,7 +90,19 @@ createdb mi_app
 | Pinia | 4 | Estado global |
 | @vite-pwa/nuxt | 1.1 | PWA |
 
-> PrimeVue se mantiene en la línea 4.x a propósito: PrimeVue 5 cambió a una licencia comercial que requiere license key. La 4.x es la última con licencia MIT.
+### Frontend React (`front-react/`)
+| Tecnología | Versión | Uso |
+|---|---|---|
+| React | 19.3 | Librería UI (TypeScript) |
+| Vite | 8.3 | Bundler y dev server |
+| React Router | 8.4 | Rutas (con carga diferida por página) |
+| PrimeReact | 10.9 | Componentes UI (tema `lara-light-blue`) |
+| Tailwind CSS | 4.3 | Estilos |
+| Iconify | — | Íconos vía `@iconify/tailwind4` (`icon-[ic--twotone-home]`) |
+| Zustand | 5 | Estado global |
+| vite-plugin-pwa | 2.0 | PWA |
+
+> PrimeVue y PrimeReact se mantienen a propósito en la última versión con licencia MIT (PrimeVue 4.x y PrimeReact 10.x): PrimeVue 5 y PrimeReact 11 cambiaron a una licencia comercial que requiere license key.
 
 ### Despliegue
 - **Backend**: AWS SAM + Lambda + HTTP API Gateway
@@ -108,10 +125,11 @@ Schemas   Core (config, database, auth)
 - **Schemas**: validación y serialización con Pydantic
 - **Core**: configuración, conexión a BD y autenticación JWT
 
-### Frontend (Nuxt 4)
+### Frontend
 
 ```
-Pages → Composables → Stores (Pinia)
+Vue:   Pages → Composables → Stores (Pinia)
+React: Pages → Hooks → Stores (Zustand)
   ↓
 Components (AppHeader, AppNavigation, NavSection)
 ```
@@ -136,7 +154,7 @@ mvp-base/
 │   ├── pyproject.toml            # Dependencias (Poetry)
 │   └── .env.example              # Variables de entorno de ejemplo
 │
-├── front/                        # Frontend (Nuxt 4)
+├── front-vue/                    # Frontend Vue (Nuxt 4) → queda como front/ tras el setup
 │   ├── app/
 │   │   ├── assets/
 │   │   │   ├── css/main.css      # Tailwind + PrimeUI + Iconify
@@ -150,6 +168,20 @@ mvp-base/
 │   │   ├── layouts/default.vue   # Header + navegación + contenido
 │   │   └── pages/                # index, demo, docs, settings, login-1, login-2
 │   ├── nuxt.config.ts
+│   └── package.json
+│
+├── front-react/                  # Frontend React (Vite) → queda como front/ tras el setup
+│   ├── src/
+│   │   ├── assets/css/main.css   # Tailwind + PrimeReact (en su propia capa) + Iconify
+│   │   ├── components/           # AppHeader, AppNavigation, NavSection (.tsx)
+│   │   ├── hooks/useToast.tsx    # Toast global de PrimeReact
+│   │   ├── stores/sidebar.ts     # Estado del sidebar (Zustand, persistido en localStorage)
+│   │   ├── layouts/DefaultLayout.tsx
+│   │   ├── pages/                # Index, Demo, Docs, Settings, Login1, Login2
+│   │   ├── router.tsx            # Rutas (React Router)
+│   │   └── main.tsx
+│   ├── vite.config.ts
+│   ├── wrangler.jsonc            # Deploy como SPA en Cloudflare Workers
 │   └── package.json
 │
 ├── dev.sh                        # Levanta back + front con logs prefijados
@@ -166,6 +198,8 @@ mvp-base/
 ```
 
 Levanta `uvicorn --reload` (back) y `bun run dev` (front) en paralelo. Cada log sale con su prefijo de color (`[back]` / `[front]`). Con `Ctrl+C` se cierran ambos.
+
+Usa `front/`. En el template, mientras aún existen los dos frontends, usa `front-vue/` por defecto; con `./dev.sh react` usa `front-react/`.
 
 ### Por separado
 
@@ -200,7 +234,7 @@ curl -X POST http://localhost:8000/auth/login \
 
 ### Agregar opciones al menú
 
-Los ítems del menú están en `front/app/components/AppNavigation.vue`, agrupados por sección:
+Los ítems del menú están en `AppNavigation` (`front/app/components/AppNavigation.vue` en Vue, `front/src/components/AppNavigation.tsx` en React), agrupados por sección:
 
 ```ts
 const mainNavItems = [
@@ -246,6 +280,8 @@ npm run deploy           # build + wrangler deploy
 npm run preview          # probar el build localmente con wrangler
 ```
 
+En React, el nombre del worker está en `front/wrangler.jsonc` y se sirve como SPA (rutas desconocidas → `index.html`).
+
 ## ⚙️ Configuración
 
 ### Backend — `back/.env`
@@ -260,9 +296,10 @@ JWT_ACCESS_TOKEN_EXPIRE_MINUTES=10080   # 7 días
 
 Se leen con `pydantic-settings` en `back/src/core/config.py`.
 
-### Frontend — `front/nuxt.config.ts`
+### Frontend
 
-Módulos `@primevue/nuxt-module` y `@pinia/nuxt`, el tema de PrimeVue en `app/assets/themes/theme.js` y Tailwind vía `@tailwindcss/vite`.
+- **Vue** — `front/nuxt.config.ts`: módulos `@primevue/nuxt-module` y `@pinia/nuxt`, el tema de PrimeVue en `app/assets/themes/theme.js` y Tailwind vía `@tailwindcss/vite`.
+- **React** — `front/vite.config.ts`: plugins de React, Tailwind y PWA (puerto 3000). El tema de PrimeReact se importa en `src/assets/css/main.css`, dentro de la capa `primereact` para que las utilidades de Tailwind lo sobrescriban.
 
 ## 🔐 Seguridad
 
@@ -276,7 +313,8 @@ Módulos `@primevue/nuxt-module` y `@pinia/nuxt`, el tema de PrimeVue en `app/as
 ## 📝 Convenciones de Código
 
 - **Backend**: PEP 8, type hints, docstrings en funciones públicas y snake_case.
-- **Frontend**: `<script setup lang="ts">`, composables para lógica reutilizable, camelCase para variables y PascalCase para componentes.
+- **Frontend Vue**: `<script setup lang="ts">`, composables para lógica reutilizable, camelCase para variables y PascalCase para componentes.
+- **Frontend React**: componentes funcionales en `.tsx`, hooks para lógica reutilizable, stores de Zustand para estado global, camelCase para variables y PascalCase para componentes.
 
 ## 📄 Licencia
 
