@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from typing import Optional
+from uuid import UUID
 from ..models.user import User
 from ..core.auth import hash_password
 
@@ -14,7 +15,7 @@ class UserRepository:
         """Get user by email"""
         return self.db.query(User).filter(User.email == email).first()
 
-    def get_by_id(self, user_id: int) -> Optional[User]:
+    def get_by_id(self, user_id: UUID) -> Optional[User]:
         """Get user by ID"""
         return self.db.query(User).filter(User.id == user_id).first()
 

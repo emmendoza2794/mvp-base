@@ -1,3 +1,4 @@
+from uuid import UUID
 from pydantic import BaseModel, EmailStr
 
 
@@ -27,7 +28,7 @@ class TokenData(BaseModel):
 
 class UserResponse(BaseModel):
     """Schema for user response"""
-    id: int
+    id: UUID
     email: str
     name: str
 

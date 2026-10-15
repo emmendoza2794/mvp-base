@@ -1,6 +1,7 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import timedelta
+from uuid import UUID
 from ..repositories.user import UserRepository
 from ..core.auth import verify_password, create_access_token
 from ..schemas.auth import UserLogin, UserRegister, Token
@@ -77,26 +78,35 @@ class AuthService:
         # Create access token
         access_token_expires = timedelta(minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(
-            data={"sub": user.email, "user_id": user.id},
+            data={"sub": user.email, "user_id": str(user.id)},
             expires_delta=access_token_expires
         )
 
         return Token(access_token=access_token)
 
-    def get_current_user_info(self, user_id: int) -> User:
+    def get_current_user_info(self, user_id: str) -> User:
         """
         Get current user information
 
         Args:
-            user_id: User ID from token
+            user_id: User ID (UUID string) from token
 
         Returns:
             User information
 
         Raises:
-            HTTPException: If user not found
+            HTTPException: If the ID is not a valid UUID or user not found
         """
-        user = self.user_repo.get_by_id(user_id)
+        try:
+            user_uuid = UUID(str(user_id))
+        except ValueError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+        user = self.user_repo.get_by_id(user_uuid)
 
         if not user:
             raise HTTPException(
